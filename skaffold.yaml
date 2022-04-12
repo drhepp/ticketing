@@ -1,0 +1,62 @@
+apiVersion: skaffold/v2beta26
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  # googleCloudBuild:
+  #   projectId: ticketing-dev-341422
+  artifacts:
+    # - image: us.gcr.io/ticketing-dev-341422/auth
+    - image: dominikhepp/auth
+      context: auth
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: './src/**/*.ts'
+            dest: .
+    # - image: us.gcr.io/ticketing-dev-341422/client
+    - image: dominikhepp/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.js'
+            dest: .
+    - image: dominikhepp/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: './src/**/*.ts'
+            dest: .
+    - image: dominikhepp/orders
+      context: orders
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: './src/**/*.ts'
+            dest: .
+    - image: dominikhepp/expiration
+      context: expiration
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: './src/**/*.ts'
+            dest: .
+    - image: dominikhepp/payments
+      context: payments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: './src/**/*.ts'
+            dest: .
